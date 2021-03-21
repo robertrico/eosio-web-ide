@@ -3,6 +3,7 @@
 // Message table
 struct [[eosio::table("message"), eosio::contract("talk")]] message {
     uint64_t    id       = {}; // Non-0
+    uint64_t    likes    = 0; // Non-0
     uint64_t    reply_to = {}; // Non-0 if this is a reply
     eosio::name user     = {};
     std::string content  = {};
@@ -21,7 +22,7 @@ class talk : eosio::contract {
     using contract::contract;
 
     // Post a message
-    [[eosio::action]] void post(uint64_t id, uint64_t reply_to, eosio::name user, const std::string& content) {
+    [[eosio::action]] void post(uint64_t id, uint64_t reply_to, uint64_t likes, eosio::name user, const std::string& content) {
         message_table table{get_self(), 0};
 
         // Check user
@@ -41,6 +42,7 @@ class talk : eosio::contract {
             message.id       = id;
             message.reply_to = reply_to;
             message.user     = user;
+            message.likes    = likes;
             message.content  = content;
         });
     }
